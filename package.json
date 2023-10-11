@@ -1,0 +1,14 @@
+{
+  "name": "google-calendar-cinema-event-manager",
+  "version": "0.1.0",
+  "description": "A google app script that populates cinema events into a specified google calendar",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "robjackstewart@gmail.com",
+  "license": "ISC",
+  "dependencies": {
+    "@types/google-apps-script": "^1.0.74"
+  }
+}
