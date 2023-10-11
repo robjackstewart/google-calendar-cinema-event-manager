@@ -1,8 +1,14 @@
 {
   "timeZone": "Europe/London",
   "dependencies": {
-    
   },
+  "executionApi": {
+    "access": "MYSELF"
+  },
+  "urlFetchWhitelist": [
+    "https://api.themoviedb.org/3/search/movie",
+    "https://api.themoviedb.org/3/movie"
+  ],
   "exceptionLogging": "STACKDRIVER",
   "runtimeVersion": "V8"
 }
