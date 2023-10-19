@@ -132,7 +132,6 @@ ${CINEMA_EVENT_DESCRIPTION_TAG}
 
         const searchResponse = UrlFetchApp.fetch(searchUrl, options);
         const parsedSearchResponse = JSON.parse(searchResponse.getContentText());
-        Logger.log(parsedSearchResponse);
         if (parsedSearchResponse.results.length > 0) {
             const firstResult = parsedSearchResponse.results[0];
             const tmdb_id: string = firstResult.id;
@@ -140,7 +139,6 @@ ${CINEMA_EVENT_DESCRIPTION_TAG}
 
             var movieDetailsResponse = UrlFetchApp.fetch(movieDetailsUrl, options);
             var parsedMovieDetailsResponse = JSON.parse(movieDetailsResponse.getContentText());
-            Logger.log(parsedMovieDetailsResponse);
             const runtimeInMinutes: number = parsedMovieDetailsResponse.runtime;
             if (runtimeInMinutes > 0) {
                 return runtimeInMinutes;
@@ -159,7 +157,6 @@ class CinemaMailThreadSearch {
 
     constructor(cinemaChain: string, eventSearchCriteria: GMailSearchCriteria[], eventMessageParser: ((message: GoogleAppsScript.Gmail.GmailMessage) => CinemaEvent | null), cancellationSearchCriteria: GMailSearchCriteria[] | null, cancellationMessageParser: ((message: GoogleAppsScript.Gmail.GmailMessage) => CancelledCinemaEvent | null) | null) {
         this.cinemaChain = cinemaChain;
-        Logger.log(`Creating CinemaMailThreadSearch for ${cinemaChain}`);
         this.eventSearchCriteriaString = eventSearchCriteria.map(condition => {
             return `${condition.operator}:${condition.value}`
           }).join(' ');
@@ -185,7 +182,6 @@ class GMailSearchCriteria {
 }
 
 function parseCineworldEventEmail(mail: GoogleAppsScript.Gmail.GmailMessage): CinemaEvent| null {
-    Logger.log(mail);
     const bookingDetailsBodyRegex = new RegExp(/You are going to see: .*(?=Use your e-ticket)/gms);
     const bookingReferenceRegex = new RegExp(/(?<=Your booking reference\snumber\sis:\s)[a-zA-Z0-9]*/mg);
     const filmNameRegex = new RegExp(/(?<=You are going to see:\s\*).*(?=\*)/);
@@ -301,7 +297,6 @@ function getFirstEventDetailMatch(regex: RegExp, subject: string, lookingFor: st
 }
 
 function parsePicturehouseEventEmail(mail: GoogleAppsScript.Gmail.GmailMessage): CinemaEvent | null {
-    Logger.log(mail);
     const bookingDetailsBodyRegex = new RegExp(/(?<=Your Order).*(?=About your order)/gms);
     const bookingReferenceRegex = new RegExp(/(?<=\*)[a-zA-Z0-9]*(?=\*)/);
     const filmNameRegex = new RegExp(/(?<=Film\/Event:).*/);
@@ -367,7 +362,6 @@ function parsePicturehouseEventEmail(mail: GoogleAppsScript.Gmail.GmailMessage):
 }
 
 function parsePicturehouseCancellationEmail(mail: GoogleAppsScript.Gmail.GmailMessage): CancelledCinemaEvent {
-    Logger.log(mail);
     let cinemaChain = "";
     let film = "";
     let start = new Date();
@@ -400,7 +394,6 @@ function getEventsByCinemaChain(): Map<string, CinemaEvent[]> {
     let eventsByCinemaChain: Map<string, CinemaEvent[]> = new Map<string, CinemaEvent[]>();
     mailThreadSearchCriteriaByCinemaChains.forEach(cinemaMailThreadSearch => {
         const mailThreads = GmailApp.search(cinemaMailThreadSearch.eventSearchCriteriaString);
-        Logger.log(`Found ${mailThreads.length} from cinema chain ${cinemaMailThreadSearch.cinemaChain}`);
         mailThreads.forEach(mailThread => {
             const messages = mailThread.getMessages().sort((a, b) => (a.getDate() > b.getDate()) ? 1 : -1);
             messages.forEach(message => {
