@@ -4,7 +4,10 @@
   "description": "A google app script that populates cinema events into a specified google calendar",
   "main": "index.js",
   "scripts": {
-    "lint": "eslint . --ext .ts"
+    "lint": "eslint . --ext .ts",
+    "login": "clasp login",
+    "push": "clasp push",
+    "open": "clasp open"
   },
   "author": "robjackstewart@gmail.com",
   "license": "ISC",
@@ -12,6 +15,7 @@
     "@types/google-apps-script": "^1.0.74"
   },
   "devDependencies": {
+    "@google/clasp": "github:google/clasp",
     "@typescript-eslint/eslint-plugin": "^6.8.0",
     "@typescript-eslint/parser": "^6.8.0",
     "eslint": "^8.51.0"
