@@ -90,8 +90,22 @@ ${CINEMA_EVENT_DESCRIPTION_TAG}
             tmdb_search_term = tmdb_search_term.slice(0, lastIndex).trim();
         }
 
-        if (tmdb_search_term.endsWith("(35mm)")) {
-            const lastIndex = tmdb_search_term.lastIndexOf("(35mm)");
+        if (tmdb_search_term.includes("(35mm)")) {
+            tmdb_search_term = tmdb_search_term.replace("(35mm)", "").trim();
+        }
+
+        if (tmdb_search_term.endsWith("+ panel")) {
+            const lastIndex = tmdb_search_term.lastIndexOf("+ panel");
+            tmdb_search_term = tmdb_search_term.slice(0, lastIndex).trim();
+        }
+
+        if (tmdb_search_term.endsWith("+ recorded q&a")) {
+            const lastIndex = tmdb_search_term.lastIndexOf("+ recorded q&a");
+            tmdb_search_term = tmdb_search_term.slice(0, lastIndex).trim();
+        }
+
+        if (tmdb_search_term.endsWith("+ q&a")) {
+            const lastIndex = tmdb_search_term.lastIndexOf("+ q&a");
             tmdb_search_term = tmdb_search_term.slice(0, lastIndex).trim();
         }
 
@@ -100,7 +114,12 @@ ${CINEMA_EVENT_DESCRIPTION_TAG}
             tmdb_search_term = tmdb_search_term.slice(firstIndex + "sla:".length, tmdb_search_term.length).trim();
         }
 
-        Logger.log(`Searching TMDB with '${tmdb_search_term}'`);
+        if (tmdb_search_term.startsWith("dementia friendly:")) {
+            const firstIndex = tmdb_search_term.indexOf("dementia friendly:");
+            tmdb_search_term = tmdb_search_term.slice(firstIndex + "dementia friendly:".length, tmdb_search_term.length).trim();
+        }
+
+        Logger.log(`Searching TMDB with term '${tmdb_search_term}'`);
         const searchUrl = `https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(tmdb_search_term)}-&include_adult=true&language=${TMDB_LANGUAGE}&page=1`;
 
         const options = {
