@@ -58,8 +58,6 @@ class CinemaEvent {
             }
         }
 
-        Logger.log(_runtime);
-
         this.end = new Date(start.getTime() + (_runtime + ADVERT_LENGTH_IN_MINUTES) * 60000);
 
         let geocoder = Maps.newGeocoder().geocode(location);
