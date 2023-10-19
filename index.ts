@@ -492,16 +492,32 @@ function main() {
             let matchingCalendarEvents = getExistingCalendarEvents(CALENDAR, event); // get any existing calendar events for that event
 
             Logger.log(`Found ${matchingCalendarEvents.length} existing events for ${event.title}.`)
-            matchingCalendarEvents.forEach(matchingCalendarEvent => { // for each existing calendar event
-                Logger.log(`Preparing to delete event "${matchingCalendarEvent.getTitle()}".`);
+            matchingCalendarEvents.forEach((matchingCalendarEvent, index) => { // for each existing calendar event
+                if (index === 0) { // if this is the first event
+                    Logger.log(`Updating event "${matchingCalendarEvent.getTitle()}" (${matchingCalendarEvent.getId()}) with details for "${event.film}".`)
+                    matchingCalendarEvent.setTitle(event.title);
+                    matchingCalendarEvent.setTime(event.start, event.end);
+                    matchingCalendarEvent.setDescription(event.description);
+                    matchingCalendarEvent.setLocation(event.location);
+                    return; // skip to the next one
+                }
+                Logger.log(`Preparing to delete event "${matchingCalendarEvent.getId()}".`);
                 matchingCalendarEvent.deleteEvent(); // delete the existing calendar event
-                Logger.log(`Deleted event "${matchingCalendarEvent.getTitle()}".`);
+                Logger.log(`Deleted event "${matchingCalendarEvent.getTitle()}" (${matchingCalendarEvent.getId()}).`);
             });
 
-            if (cancellation == null) { // if the current event does not has a cancellation
-                Logger.log(`Creating event with title ${event.title}, starting at ${event.start}, ending at ${event.end}, at ${event.location}, with seats ${event.seats}`);
-                const calendar_event = CALENDAR.createEvent(event.title, event.start, event.end, { description: event.description, location: event.location }); // create the calendar event
+            if (cancellation !== null) { // if the current event does not has a cancellation and no matching calendar events were found
+                Logger.log(`Not creating new event ${event.title} as there is a cancellation.`)
+                return;
             }
+
+            if (matchingCalendarEvents.length > 0) { // if the current event does not has a cancellation and no matching calendar events were found
+                Logger.log(`Not creating new event ${event.title} as existing event was updated.`)
+                return;
+            }
+
+            Logger.log(`Creating event with title ${event.title}, starting at ${event.start}, ending at ${event.end}, at ${event.location}, with seats ${event.seats}`);
+            CALENDAR.createEvent(event.title, event.start, event.end, { description: event.description, location: event.location }); // create the calendar event
         });
     });
 }
