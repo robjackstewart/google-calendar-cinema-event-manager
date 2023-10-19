@@ -60,7 +60,7 @@ class CinemaEvent {
 
         this.end = new Date(start.getTime() + (_runtime + ADVERT_LENGTH_IN_MINUTES) * 60000);
 
-        let geocoder = Maps.newGeocoder().geocode(location);
+        const geocoder = Maps.newGeocoder().geocode(location);
         if (geocoder.results.length != 0) {
             this.location = geocoder.results[0].formatted_address;
         } else {
@@ -140,8 +140,8 @@ ${CINEMA_EVENT_DESCRIPTION_TAG}
             const tmdb_id: string = firstResult.id;
             const movieDetailsUrl = `https://api.themoviedb.org/3/movie/${tmdb_id}?language=${TMDB_LANGUAGE}`;
 
-            var movieDetailsResponse = UrlFetchApp.fetch(movieDetailsUrl, options);
-            var parsedMovieDetailsResponse = JSON.parse(movieDetailsResponse.getContentText());
+            const movieDetailsResponse = UrlFetchApp.fetch(movieDetailsUrl, options);
+            const parsedMovieDetailsResponse = JSON.parse(movieDetailsResponse.getContentText());
             const runtimeInMinutes: number = parsedMovieDetailsResponse.runtime;
             if (runtimeInMinutes > 0) {
                 return runtimeInMinutes;
@@ -200,93 +200,94 @@ function parseCineworldEventEmail(mail: GoogleAppsScript.Gmail.GmailMessage): Ci
 
     const mailLink = `${GMAIL_INBOX_PREFIX}/${mail.getId()}`;
 
-    let bookingReference = getFirstEventDetailMatch(bookingReferenceRegex, mailPlainBody, "booking reference", "mail body");
+    const bookingReference = getFirstEventDetailMatch(bookingReferenceRegex, mailPlainBody, "booking reference", "mail body");
     if (bookingReference === null) {
         return null;
     }
     
-    let bookingDetailsBody = getFirstEventDetailMatch(bookingDetailsBodyRegex, mailPlainBody, "booking details", "mail body");
+    const bookingDetailsBody = getFirstEventDetailMatch(bookingDetailsBodyRegex, mailPlainBody, "booking details", "mail body");
     if (bookingDetailsBody === null) {
         return null;
     }
 
-    let filmName = getFirstEventDetailMatch(filmNameRegex, bookingDetailsBody, "film name", "booking details");
+    const filmName = getFirstEventDetailMatch(filmNameRegex, bookingDetailsBody, "film name", "booking details");
     if (filmName === null) {
         return null;
     }
 
-    let cinemaAddress = getFirstEventDetailMatch(cinemaAddressRegex, bookingDetailsBody, "cinema address", "booking details");
+    const cinemaAddress = getFirstEventDetailMatch(cinemaAddressRegex, bookingDetailsBody, "cinema address", "booking details");
     if (cinemaAddress === null) {
         return null;
     }
 
-    let dateString = getFirstEventDetailMatch(dateRegex, bookingDetailsBody, "date", "booking details");
+    const dateString = getFirstEventDetailMatch(dateRegex, bookingDetailsBody, "date", "booking details");
     if (dateString === null) {
         return null;
     }
 
-    let ticketCountString = getFirstEventDetailMatch(ticketCountRegex, bookingDetailsBody, "ticket count", "booking details");
+    const ticketCountString = getFirstEventDetailMatch(ticketCountRegex, bookingDetailsBody, "ticket count", "booking details");
     if (ticketCountString === null) {
         return null;
     }
 
-    let ticketCount = Number.parseInt(ticketCountString);
+    const ticketCount = Number.parseInt(ticketCountString);
 
-    let screenString = getFirstEventDetailMatch(screenRegex, bookingDetailsBody, "screen", "booking details");
+    const screenString = getFirstEventDetailMatch(screenRegex, bookingDetailsBody, "screen", "booking details");
     if (screenString === null) {
         return null;
     }
 
-    let seatsString = getFirstEventDetailMatch(seatsRegex, bookingDetailsBody, "seats", "booking details");
+    const seatsString = getFirstEventDetailMatch(seatsRegex, bookingDetailsBody, "seats", "booking details");
     if (seatsString === null) {
         return null;
     }
 
-    let certificationString = getFirstEventDetailMatch(certificationRegex, bookingDetailsBody, "certification", "booking details");
+    const certificationString = getFirstEventDetailMatch(certificationRegex, bookingDetailsBody, "certification", "booking details");
     if (certificationString === null) {
         return null;
     }
 
-    let runningTimeInMinutesString = getFirstEventDetailMatch(runningTimeInMinutesRegex, bookingDetailsBody, "running time in minutes", "booking details");
+    const runningTimeInMinutesString = getFirstEventDetailMatch(runningTimeInMinutesRegex, bookingDetailsBody, "running time in minutes", "booking details");
     if (runningTimeInMinutesString === null) {
         return null;
     }
 
-    let runningTimeInMinutes = Number.parseInt(runningTimeInMinutesString);
+    const runningTimeInMinutes = Number.parseInt(runningTimeInMinutesString);
 
-    let dateTimeSplit = dateString.split(' ')
-    let date = dateTimeSplit[0]
-    let time = dateTimeSplit[1];
-    let dateSplit = date.split('/')
-    let day = dateSplit[0]
-    let month = dateSplit[1]
-    let year = dateSplit[2]
-    let cinemaChain = CINEWORLD;
-    let title = filmName;
-    let film = filmName;
-    let start = new Date(`${year}-${month}-${day}T${time}:00`);
-    let location = `${cinemaChain}, ${cinemaAddress}`;
-    let numberOfAttendees = ticketCount;
-    let seats = seatsString;
-    let rating = certificationString;
+    const dateTimeSplit = dateString.split(' ')
+    const date = dateTimeSplit[0]
+    const time = dateTimeSplit[1];
+    const dateSplit = date.split('/')
+    const day = dateSplit[0]
+    const month = dateSplit[1]
+    const year = dateSplit[2]
+    const cinemaChain = CINEWORLD;
+    const title = filmName;
+    const film = filmName;
+    const start = new Date(`${year}-${month}-${day}T${time}:00`);
+    const location = `${cinemaChain}, ${cinemaAddress}`;
+    const numberOfAttendees = ticketCount;
+    const seats = seatsString;
+    const rating = certificationString;
     return new CinemaEvent(cinemaChain, title, film, start, runningTimeInMinutes, location, numberOfAttendees, seats, rating, bookingReference, mailLink);
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function parseCineworldCancellationEmail(mail: GoogleAppsScript.Gmail.GmailMessage): CancelledCinemaEvent {
-    let cinemaChain = "";
-    let film = "";
-    let start = new Date();
-    let end = new Date();
-    let location = "";
+    const cinemaChain = "";
+    const film = "";
+    const start = new Date();
+    const end = new Date();
+    const location = "";
     return new CancelledCinemaEvent(cinemaChain, film, start, end, location);
 }
 
 function getFirstMatch(regex: RegExp, subject: string): string | null {
-    let matchesResult = subject.match(regex);
+    const matchesResult = subject.match(regex);
     if (matchesResult === null) {
         return null;
     }
-    let matches = matchesResult;
+    const matches = matchesResult;
     if (matches.length > 1) {
         throw new Error("Found more than one match.");
     }
@@ -315,65 +316,66 @@ function parsePicturehouseEventEmail(mail: GoogleAppsScript.Gmail.GmailMessage):
 
     const mailPlainBody = mail.getPlainBody();
 
-    let bookingReference = getFirstEventDetailMatch(bookingReferenceRegex, mailPlainBody, "booking reference", "mail body");
+    const bookingReference = getFirstEventDetailMatch(bookingReferenceRegex, mailPlainBody, "booking reference", "mail body");
     if (bookingReference === null) {
         return null;
     }
     
-    let bookingDetailsBody = getFirstEventDetailMatch(bookingDetailsBodyRegex, mailPlainBody, "booking details", "mail body");
+    const bookingDetailsBody = getFirstEventDetailMatch(bookingDetailsBodyRegex, mailPlainBody, "booking details", "mail body");
     if (bookingDetailsBody === null) {
         return null;
     }
 
-    let filmName = getFirstEventDetailMatch(filmNameRegex, bookingDetailsBody, "film name", "booking details");
+    const filmName = getFirstEventDetailMatch(filmNameRegex, bookingDetailsBody, "film name", "booking details");
     if (filmName === null) {
         return null;
     }
 
-    let cinemaName = getFirstEventDetailMatch(cinemaRegex, bookingDetailsBody, "cinema name", "booking details");
+    const cinemaName = getFirstEventDetailMatch(cinemaRegex, bookingDetailsBody, "cinema name", "booking details");
     if (cinemaName === null) {
         return null;
     }
 
-    let dateString = getFirstEventDetailMatch(dateRegex, bookingDetailsBody, "date", "booking details");
+    const dateString = getFirstEventDetailMatch(dateRegex, bookingDetailsBody, "date", "booking details");
     if (dateString === null) {
         return null;
     }
 
-    let timeString = getFirstEventDetailMatch(timeRegex, bookingDetailsBody, "time", "booking details");
+    const timeString = getFirstEventDetailMatch(timeRegex, bookingDetailsBody, "time", "booking details");
     if (timeString === null) {
         return null;
     }
 
-    let screenString = getFirstEventDetailMatch(screenRegex, bookingDetailsBody, "screen", "booking details");
+    const screenString = getFirstEventDetailMatch(screenRegex, bookingDetailsBody, "screen", "booking details");
     if (screenString === null) {
         return null;
     }
 
-    let seatsMatchesResult = bookingDetailsBody.match(seatsRegex);
+    const seatsMatchesResult = bookingDetailsBody.match(seatsRegex);
     if (seatsMatchesResult === null) {
         return null;
     }
-    let seatsMatches = seatsMatchesResult;
+    const seatsMatches = seatsMatchesResult;
 
-    let cinemaChain = PICTUREHOUSE;
-    let cinema = cinemaName;
-    let film = filmName;
-    let start = new Date(`${dateString.trim()} ${timeString.trim()}`);
-    let location = `${cinemaChain.trim()}, ${cinema.trim()}`;
-    let numberOfAttendees = seatsMatches.length;
-    let seats = seatsMatches.join(', ');
-    let rating = "Unknown";
-    let title = filmName;
+    const cinemaChain = PICTUREHOUSE;
+    const cinema = cinemaName;
+    const film = filmName;
+    const start = new Date(`${dateString.trim()} ${timeString.trim()}`);
+    const location = `${cinemaChain.trim()}, ${cinema.trim()}`;
+    const numberOfAttendees = seatsMatches.length;
+    const seats = seatsMatches.join(', ');
+    const rating = "Unknown";
+    const title = filmName;
     return new CinemaEvent(cinemaChain, title, film, start, null, location, numberOfAttendees, seats, rating, bookingReference, mailLink);
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function parsePicturehouseCancellationEmail(mail: GoogleAppsScript.Gmail.GmailMessage): CancelledCinemaEvent {
-    let cinemaChain = "";
-    let film = "";
-    let start = new Date();
-    let end = new Date();
-    let location = "";
+    const cinemaChain = "";
+    const film = "";
+    const start = new Date();
+    const end = new Date();
+    const location = "";
     return new CancelledCinemaEvent(cinemaChain, film, start, end, location);
 }
 
@@ -398,7 +400,7 @@ const CALENDAR: GoogleAppsScript.Calendar.Calendar = CalendarApp.getCalendarById
 
 
 function getEventsByCinemaChain(): Map<string, CinemaEvent[]> {
-    let eventsByCinemaChain: Map<string, CinemaEvent[]> = new Map<string, CinemaEvent[]>();
+    const eventsByCinemaChain: Map<string, CinemaEvent[]> = new Map<string, CinemaEvent[]>();
     mailThreadSearchCriteriaByCinemaChains.forEach(cinemaMailThreadSearch => {
         const mailThreads = GmailApp.search(cinemaMailThreadSearch.eventSearchCriteriaString);
         mailThreads.forEach(mailThread => {
@@ -421,7 +423,7 @@ function getEventsByCinemaChain(): Map<string, CinemaEvent[]> {
 }
 
 function getCancelledEventsByCinemaChain(): Map<string,CancelledCinemaEvent[]> {
-    let cancelledEventsByChain: Map<string, CancelledCinemaEvent[]> = new Map<string, CancelledCinemaEvent[]>(); 
+    const cancelledEventsByChain: Map<string, CancelledCinemaEvent[]> = new Map<string, CancelledCinemaEvent[]>(); 
     mailThreadSearchCriteriaByCinemaChains.forEach(cinemaMailThreadSearch => {
         const cancellations: CancelledCinemaEvent[] = []; 
         if (cinemaMailThreadSearch.cancellationSearchCriteriaString !== null && cinemaMailThreadSearch.cancellationMessageParser !== null) {
@@ -440,11 +442,6 @@ function getCancelledEventsByCinemaChain(): Map<string,CancelledCinemaEvent[]> {
         cancelledEventsByChain.set(cinemaMailThreadSearch.cinemaChain, cancellations);
     });
     return cancelledEventsByChain;
-}
-
-function doesEventAlreadyExist(calendar: GoogleAppsScript.Calendar.Calendar, event: CinemaEvent): boolean {
-    const existingEvents = getExistingCalendarEvents(calendar, event);
-    return existingEvents.length > 0;
 }
 
 function getExistingCalendarEvents(calendar: GoogleAppsScript.Calendar.Calendar, event: CinemaEvent): GoogleAppsScript.Calendar.CalendarEvent[] {
@@ -479,6 +476,7 @@ function matchEventsToCancellations(cinemaEvents: Map<string, CinemaEvent[]>, ca
     return cancellationsByEventByCinemaChain;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function main() {
     const cinemaEventsByCinemaChain = getEventsByCinemaChain(); // get events that would be created
     Logger.log(`Found events for ${cinemaEventsByCinemaChain.size} cinema chains.`);
@@ -496,7 +494,7 @@ function main() {
                 Logger.log(`Processing event ${event.title} for ${cinemaChain} with no cancellation...`);
             }
 
-            let matchingCalendarEvents = getExistingCalendarEvents(CALENDAR, event); // get any existing calendar events for that event
+            const matchingCalendarEvents = getExistingCalendarEvents(CALENDAR, event); // get any existing calendar events for that event
 
             Logger.log(`Found ${matchingCalendarEvents.length} existing events for ${event.title}.`)
             matchingCalendarEvents.forEach((matchingCalendarEvent, index) => { // for each existing calendar event

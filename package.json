@@ -4,11 +4,16 @@
   "description": "A google app script that populates cinema events into a specified google calendar",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "eslint . --ext .ts"
   },
   "author": "robjackstewart@gmail.com",
   "license": "ISC",
   "dependencies": {
     "@types/google-apps-script": "^1.0.74"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^6.8.0",
+    "@typescript-eslint/parser": "^6.8.0",
+    "eslint": "^8.51.0"
   }
 }
