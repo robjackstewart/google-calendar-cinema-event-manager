@@ -5,6 +5,7 @@ const ADVERT_LENGTH_IN_MINUTES = 25;
 const DEFAULT_RUNTIME = 120;
 const TMDB_ACESS_TOKEN = PropertiesService.getScriptProperties().getProperty('TMDB_ACCESS_TOKEN');
 const TMDB_LANGUAGE = 'en-GB';
+const GMAIL_INBOX_PREFIX = "https://mail.google.com/mail/u/0/#inbox/"
 
 class CancelledCinemaEvent {
     public readonly cinemaChain: string;
@@ -34,8 +35,9 @@ class CinemaEvent {
     public readonly rating: string;
     public readonly description: string;
     public readonly bookingReference: string;
+    public readonly mailLink: string;
 
-    constructor(cinemaChain: string, title: string, film: string, start: Date, runtime: number | null, location: string, numberOfAttendees: number, seats: string, rating: string, bookingReference: string) {
+    constructor(cinemaChain: string, title: string, film: string, start: Date, runtime: number | null, location: string, numberOfAttendees: number, seats: string, rating: string, bookingReference: string, mailLink: string) {
         this.cinemaChain = cinemaChain.trim();
         this.title = title.trim();
         this.film = film.trim();
@@ -45,6 +47,7 @@ class CinemaEvent {
         this.seats = seats.trim();
         this.rating = rating.trim();
         this.bookingReference = bookingReference.trim();
+        this.mailLink = mailLink;
         let _runtime = DEFAULT_RUNTIME;
         if (runtime !== null) {
             _runtime = runtime;
@@ -72,6 +75,8 @@ Booking reference: ${this.bookingReference}
 Number of attendees: ${this.numberOfAttendees}
 Seats: ${this.seats}
 Rating: ${this.rating}
+
+<a href="${mailLink}">Generated from this email</a>
 
 ${CINEMA_EVENT_DESCRIPTION_TAG}
 `;
@@ -195,6 +200,8 @@ function parseCineworldEventEmail(mail: GoogleAppsScript.Gmail.GmailMessage): Ci
 
     const mailPlainBody = mail.getPlainBody();
 
+    const mailLink = `${GMAIL_INBOX_PREFIX}/${mail.getId()}`;
+
     let bookingReference = getFirstEventDetailMatch(bookingReferenceRegex, mailPlainBody, "booking reference", "mail body");
     if (bookingReference === null) {
         return null;
@@ -264,7 +271,7 @@ function parseCineworldEventEmail(mail: GoogleAppsScript.Gmail.GmailMessage): Ci
     let numberOfAttendees = ticketCount;
     let seats = seatsString;
     let rating = certificationString;
-    return new CinemaEvent(cinemaChain, title, film, start, runningTimeInMinutes, location, numberOfAttendees, seats, rating, bookingReference);
+    return new CinemaEvent(cinemaChain, title, film, start, runningTimeInMinutes, location, numberOfAttendees, seats, rating, bookingReference, mailLink);
 }
 
 function parseCineworldCancellationEmail(mail: GoogleAppsScript.Gmail.GmailMessage): CancelledCinemaEvent {
@@ -305,6 +312,8 @@ function parsePicturehouseEventEmail(mail: GoogleAppsScript.Gmail.GmailMessage):
     const timeRegex = new RegExp(/(?<=Time:).*/);
     const screenRegex = new RegExp(/(?<=Screen:).*/);
     const seatsRegex = new RegExp(/(?<=[Tickets:.*| Member])[A-Z]+-[0-9]*/gm);
+
+    const mailLink = `${GMAIL_INBOX_PREFIX}/${mail.getId()}`;
 
     const mailPlainBody = mail.getPlainBody();
 
@@ -358,7 +367,7 @@ function parsePicturehouseEventEmail(mail: GoogleAppsScript.Gmail.GmailMessage):
     let seats = seatsMatches.join(', ');
     let rating = "Unknown";
     let title = filmName;
-    return new CinemaEvent(cinemaChain, title, film, start, null, location, numberOfAttendees, seats, rating, bookingReference);
+    return new CinemaEvent(cinemaChain, title, film, start, null, location, numberOfAttendees, seats, rating, bookingReference, mailLink);
 }
 
 function parsePicturehouseCancellationEmail(mail: GoogleAppsScript.Gmail.GmailMessage): CancelledCinemaEvent {
