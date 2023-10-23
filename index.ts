@@ -49,12 +49,15 @@ class CinemaEvent {
         this.bookingReference = bookingReference.trim();
         this.mailLink = mailLink;
         let _runtime = DEFAULT_RUNTIME;
+        let usingDefaultRuntime = false;
         if (runtime !== null) {
             _runtime = runtime;
         } else {
             const tmdbRuntime = CinemaEvent.getTmdbRuntime(this.film);
             if (tmdbRuntime !== null) {
                 _runtime = tmdbRuntime;
+            } else {
+                usingDefaultRuntime = true;
             }
         }
 
@@ -73,6 +76,7 @@ Booking reference: ${this.bookingReference}
 Number of attendees: ${this.numberOfAttendees}
 Seats: ${this.seats}
 Rating: ${this.rating}
+Using default runtime: ${usingDefaultRuntime}
 
 <a href="${mailLink}">Generated from this email</a>
 
@@ -504,7 +508,6 @@ function main() {
     const cancellationsByEventByCinemaChain = matchEventsToCancellations(cinemaEventsByCinemaChain, cancellationsByCinemaChain); // match the events to the cancellations
     Logger.log("Matched events to cancellations.");
     cancellationsByEventByCinemaChain.forEach((cancellationsByEvent, cinemaChain) => { // for each event and cancellations key pair
-        Logger.log(`Processing events for ${cinemaChain}...`);
         cancellationsByEvent.forEach((cancellation, event) => { // for each event and cancellation key pair
             
             if (cancellation !== null) { // if the current event has a cancellation
