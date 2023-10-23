@@ -117,6 +117,11 @@ ${CINEMA_EVENT_DESCRIPTION_TAG}
             tmdb_search_term = tmdb_search_term.slice(firstIndex + "sla:".length, tmdb_search_term.length).trim();
         }
 
+        if (tmdb_search_term.startsWith("cameo curates:")) {
+            const firstIndex = tmdb_search_term.indexOf("cameo curates:");
+            tmdb_search_term = tmdb_search_term.slice(firstIndex + "cameo curates:".length, tmdb_search_term.length).trim();
+        }
+
         if (tmdb_search_term.startsWith("dementia friendly:")) {
             const firstIndex = tmdb_search_term.indexOf("dementia friendly:");
             tmdb_search_term = tmdb_search_term.slice(firstIndex + "dementia friendly:".length, tmdb_search_term.length).trim();
