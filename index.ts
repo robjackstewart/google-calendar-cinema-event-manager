@@ -207,31 +207,37 @@ function parseCineworldEventEmail(mail: GoogleAppsScript.Gmail.GmailMessage): Ci
 
     const bookingReference = getFirstEventDetailMatch(bookingReferenceRegex, mailPlainBody, "booking reference", "mail body");
     if (bookingReference === null) {
+        Logger.log(`Failed to find booking reference for mail with subject '${mail.getSubject()}'`);
         return null;
     }
     
     const bookingDetailsBody = getFirstEventDetailMatch(bookingDetailsBodyRegex, mailPlainBody, "booking details", "mail body");
     if (bookingDetailsBody === null) {
+        Logger.log(`Failed to find booking details body for mail with subject '${mail.getSubject()}'`);
         return null;
     }
 
     const filmName = getFirstEventDetailMatch(filmNameRegex, bookingDetailsBody, "film name", "booking details");
     if (filmName === null) {
+        Logger.log(`Failed to find film name for mail with subject '${mail.getSubject()}'`);
         return null;
     }
 
     const cinemaAddress = getFirstEventDetailMatch(cinemaAddressRegex, bookingDetailsBody, "cinema address", "booking details");
     if (cinemaAddress === null) {
+        Logger.log(`Failed to find cinema address for mail with subject '${mail.getSubject()}'`);
         return null;
     }
 
     const dateString = getFirstEventDetailMatch(dateRegex, bookingDetailsBody, "date", "booking details");
     if (dateString === null) {
+        Logger.log(`Failed to find date and time for mail with subject '${mail.getSubject()}'`);
         return null;
     }
 
     const ticketCountString = getFirstEventDetailMatch(ticketCountRegex, bookingDetailsBody, "ticket count", "booking details");
     if (ticketCountString === null) {
+        Logger.log(`Failed to find ticket count for mail with subject '${mail.getSubject()}'`);
         return null;
     }
 
@@ -239,21 +245,25 @@ function parseCineworldEventEmail(mail: GoogleAppsScript.Gmail.GmailMessage): Ci
 
     const screenString = getFirstEventDetailMatch(screenRegex, bookingDetailsBody, "screen", "booking details");
     if (screenString === null) {
+        Logger.log(`Failed to find screen for mail with subject '${mail.getSubject()}'`);
         return null;
     }
 
     const seatsString = getFirstEventDetailMatch(seatsRegex, bookingDetailsBody, "seats", "booking details");
     if (seatsString === null) {
+        Logger.log(`Failed to find seats for mail with subject '${mail.getSubject()}'`);
         return null;
     }
 
     const certificationString = getFirstEventDetailMatch(certificationRegex, bookingDetailsBody, "certification", "booking details");
     if (certificationString === null) {
+        Logger.log(`Failed to find certification for mail with subject '${mail.getSubject()}'`);
         return null;
     }
 
     const runningTimeInMinutesString = getFirstEventDetailMatch(runningTimeInMinutesRegex, bookingDetailsBody, "running time in minutes", "booking details");
     if (runningTimeInMinutesString === null) {
+        Logger.log(`Failed to find runtime for mail with subject '${mail.getSubject()}'`);
         return null;
     }
 
@@ -323,36 +333,43 @@ function parsePicturehouseEventEmail(mail: GoogleAppsScript.Gmail.GmailMessage):
 
     const bookingReference = getFirstEventDetailMatch(bookingReferenceRegex, mailPlainBody, "booking reference", "mail body");
     if (bookingReference === null) {
+        Logger.log(`Failed to find booking reference for mail with subject '${mail.getSubject()}'`);
         return null;
     }
     
     const bookingDetailsBody = getFirstEventDetailMatch(bookingDetailsBodyRegex, mailPlainBody, "booking details", "mail body");
     if (bookingDetailsBody === null) {
+        Logger.log(`Failed to find booking details body for mail with subject '${mail.getSubject()}'`);
         return null;
     }
 
     const filmName = getFirstEventDetailMatch(filmNameRegex, bookingDetailsBody, "film name", "booking details");
     if (filmName === null) {
+        Logger.log(`Failed to find film name for mail with subject '${mail.getSubject()}'`);
         return null;
     }
 
     const cinemaName = getFirstEventDetailMatch(cinemaRegex, bookingDetailsBody, "cinema name", "booking details");
     if (cinemaName === null) {
+        Logger.log(`Failed to find cinema name for mail with subject '${mail.getSubject()}'`);
         return null;
     }
 
     const dateString = getFirstEventDetailMatch(dateRegex, bookingDetailsBody, "date", "booking details");
     if (dateString === null) {
+        Logger.log(`Failed to find date for mail with subject '${mail.getSubject()}'`);
         return null;
     }
 
     const timeString = getFirstEventDetailMatch(timeRegex, bookingDetailsBody, "time", "booking details");
     if (timeString === null) {
+        Logger.log(`Failed to find time for mail with subject '${mail.getSubject()}'`);
         return null;
     }
 
     const screenString = getFirstEventDetailMatch(screenRegex, bookingDetailsBody, "screen", "booking details");
     if (screenString === null) {
+        Logger.log(`Failed to find screen for mail with subject '${mail.getSubject()}'`);
         return null;
     }
 
