@@ -374,9 +374,6 @@ function parsePicturehouseEventEmail(mail: GoogleAppsScript.Gmail.GmailMessage):
     }
 
     const seatsMatchesResult = bookingDetailsBody.match(seatsRegex);
-    if (seatsMatchesResult === null) {
-        return null;
-    }
     const seatsMatches = seatsMatchesResult;
 
     const cinemaChain = PICTUREHOUSE;
@@ -384,8 +381,8 @@ function parsePicturehouseEventEmail(mail: GoogleAppsScript.Gmail.GmailMessage):
     const film = filmName;
     const start = new Date(`${dateString.trim()} ${timeString.trim()}`);
     const location = `${cinemaChain.trim()}, ${cinema.trim()}`;
-    const numberOfAttendees = seatsMatches.length;
-    const seats = seatsMatches.join(', ');
+    const numberOfAttendees = seatsMatches === null ? 0 : seatsMatches.length;
+    const seats = seatsMatches === null ? "Unkown" : seatsMatches.join(', ');
     const rating = "Unknown";
     const title = filmName;
     return new CinemaEvent(cinemaChain, title, film, start, null, location, numberOfAttendees, seats, rating, bookingReference, mailLink);
