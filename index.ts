@@ -132,7 +132,12 @@ ${CINEMA_EVENT_DESCRIPTION_TAG}
         }
 
         Logger.log(`Searching TMDB with term '${tmdb_search_term}'`);
-        const searchUrl = `https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(tmdb_search_term)}-&include_adult=true&language=${TMDB_LANGUAGE}&page=1`;
+
+        const search_year_param = search.trim().toLowerCase() === tmdb_search_term.trim().toLowerCase() ? `&primary_release_year=${new Date().getFullYear()}` : '';
+
+        const searchUrl = `https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(tmdb_search_term)}-&include_adult=true&language=${TMDB_LANGUAGE}${search_year_param}&page=1`;
+
+        Logger.log(searchUrl);
 
         const options = {
             'muteHttpExceptions': true,
@@ -145,8 +150,13 @@ ${CINEMA_EVENT_DESCRIPTION_TAG}
         const searchResponse = UrlFetchApp.fetch(searchUrl, options);
         const parsedSearchResponse = JSON.parse(searchResponse.getContentText());
         if (parsedSearchResponse.results.length > 0) {
-            const firstResult = parsedSearchResponse.results[0];
-            const tmdb_id: string = firstResult.id;
+
+            const results: any[] = parsedSearchResponse.results;
+            
+            const matchingResult = results.find(result => result.title.toLowerCase() == tmdb_search_term.toLowerCase());
+            Logger.log(`Using TMDB movie ID ${matchingResult.id} for search '${tmdb_search_term}'`);
+            Logger.log(matchingResult);
+            const tmdb_id: string = matchingResult.id;
             const movieDetailsUrl = `https://api.themoviedb.org/3/movie/${tmdb_id}?language=${TMDB_LANGUAGE}`;
 
             const movieDetailsResponse = UrlFetchApp.fetch(movieDetailsUrl, options);
