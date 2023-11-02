@@ -71,7 +71,7 @@ class CinemaEvent {
         }
 
         this.description =
-        `
+            `
 Booking reference: ${this.bookingReference}
 Number of attendees: ${this.numberOfAttendees}
 Seats: ${this.seats}
@@ -141,7 +141,7 @@ ${CINEMA_EVENT_DESCRIPTION_TAG}
 
         const options = {
             'muteHttpExceptions': true,
-            'headers' : {
+            'headers': {
                 'Authorization': `Bearer ${TMDB_ACESS_TOKEN}`,
                 'accept': 'application/json'
             }
@@ -151,8 +151,9 @@ ${CINEMA_EVENT_DESCRIPTION_TAG}
         const parsedSearchResponse = JSON.parse(searchResponse.getContentText());
         if (parsedSearchResponse.results.length > 0) {
 
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const results: any[] = parsedSearchResponse.results;
-            
+
             const matchingResult = results.find(result => result.title.toLowerCase() == tmdb_search_term.toLowerCase());
             Logger.log(`Using TMDB movie ID ${matchingResult.id} for search '${tmdb_search_term}'`);
             Logger.log(matchingResult);
@@ -181,13 +182,13 @@ class CinemaMailThreadSearch {
         this.cinemaChain = cinemaChain;
         this.eventSearchCriteriaString = eventSearchCriteria.map(condition => {
             return `${condition.operator}:${condition.value}`
-          }).join(' ');
+        }).join(' ');
         this.eventMessageParser = eventMessageParser;
 
         if (cancellationSearchCriteria != null && cancellationSearchCriteria != undefined) {
             this.cancellationSearchCriteriaString = cancellationSearchCriteria.map(condition => {
                 return `${condition.operator}:${condition.value}`
-              }).join(' ');
+            }).join(' ');
         }
         this.cancellationMessageParser = cancellationMessageParser;
     }
@@ -196,20 +197,20 @@ class CinemaMailThreadSearch {
 class GMailSearchCriteria {
     public readonly operator: string;
     public readonly value: string;
-    
+
     constructor(operator: string, value: string) {
         this.operator = operator;
         this.value = value;
     }
 }
 
-function parseCineworldEventEmail(mail: GoogleAppsScript.Gmail.GmailMessage): CinemaEvent| null {
+function parseCineworldEventEmail(mail: GoogleAppsScript.Gmail.GmailMessage): CinemaEvent | null {
     const bookingDetailsBodyRegex = new RegExp(/You are going to see: .*(?=Use your e-ticket)/gms);
     const bookingReferenceRegex = new RegExp(/(?<=Your booking reference\snumber\sis:\s)[a-zA-Z0-9]*/mg);
     const filmNameRegex = new RegExp(/(?<=You are going to see:\s\*).*(?=\*)/);
     const cinemaAddressRegex = new RegExp(/(?<=Cinema addres: \*).*(?=\*)/);
     const dateRegex = new RegExp(/(?<=Date: \*).*(?=\*)/);
-    const ticketCountRegex  = new RegExp(/(?<=Number of people going: \*).*(?=\*)/);
+    const ticketCountRegex = new RegExp(/(?<=Number of people going: \*).*(?=\*)/);
     const screenRegex = new RegExp(/(?<=Screen: \*).*(?=\*)/);
     const seatsRegex = new RegExp(/(?<=Seat\(s\): \*).*(?=\*)/);
     const certificationRegex = new RegExp(/(?<=Certification: \*).*(?=\*)/);
@@ -224,7 +225,7 @@ function parseCineworldEventEmail(mail: GoogleAppsScript.Gmail.GmailMessage): Ci
         Logger.log(`Failed to find booking reference for mail with subject '${mail.getSubject()}'`);
         return null;
     }
-    
+
     const bookingDetailsBody = getFirstEventDetailMatch(bookingDetailsBodyRegex, mailPlainBody, "booking details", "mail body");
     if (bookingDetailsBody === null) {
         Logger.log(`Failed to find booking details body for mail with subject '${mail.getSubject()}'`);
@@ -350,7 +351,7 @@ function parsePicturehouseEventEmail(mail: GoogleAppsScript.Gmail.GmailMessage):
         Logger.log(`Failed to find booking reference for mail with subject '${mail.getSubject()}'`);
         return null;
     }
-    
+
     const bookingDetailsBody = getFirstEventDetailMatch(bookingDetailsBodyRegex, mailPlainBody, "booking details", "mail body");
     if (bookingDetailsBody === null) {
         Logger.log(`Failed to find booking details body for mail with subject '${mail.getSubject()}'`);
@@ -418,14 +419,14 @@ const mailThreadSearchCriteriaByCinemaChains = [
         new GMailSearchCriteria("subject", "cineworld"),
         new GMailSearchCriteria("subject", '"tickets for"'),
     ], parseCineworldEventEmail,
-    null,
-    parseCineworldCancellationEmail),
+        null,
+        parseCineworldCancellationEmail),
     new CinemaMailThreadSearch(PICTUREHOUSE, [
         new GMailSearchCriteria("from", "no-reply@picturehouses.com"),
         new GMailSearchCriteria("subject", '"Booking Confirmation for"'),
     ], parsePicturehouseEventEmail,
-    null,
-    parsePicturehouseCancellationEmail)
+        null,
+        parsePicturehouseCancellationEmail)
 ]
 
 const CALENDAR_URI = "vk7juf2o9nbpchm4sqnofvlid8@group.calendar.google.com";
@@ -455,10 +456,10 @@ function getEventsByCinemaChain(): Map<string, CinemaEvent[]> {
     return eventsByCinemaChain;
 }
 
-function getCancelledEventsByCinemaChain(): Map<string,CancelledCinemaEvent[]> {
-    const cancelledEventsByChain: Map<string, CancelledCinemaEvent[]> = new Map<string, CancelledCinemaEvent[]>(); 
+function getCancelledEventsByCinemaChain(): Map<string, CancelledCinemaEvent[]> {
+    const cancelledEventsByChain: Map<string, CancelledCinemaEvent[]> = new Map<string, CancelledCinemaEvent[]>();
     mailThreadSearchCriteriaByCinemaChains.forEach(cinemaMailThreadSearch => {
-        const cancellations: CancelledCinemaEvent[] = []; 
+        const cancellations: CancelledCinemaEvent[] = [];
         if (cinemaMailThreadSearch.cancellationSearchCriteriaString !== null && cinemaMailThreadSearch.cancellationMessageParser !== null) {
             const cancellationMessageParser = cinemaMailThreadSearch.cancellationMessageParser;
             const mailThreads = GmailApp.search(cinemaMailThreadSearch.cancellationSearchCriteriaString);
@@ -519,7 +520,7 @@ function main() {
     Logger.log("Matched events to cancellations.");
     cancellationsByEventByCinemaChain.forEach((cancellationsByEvent, cinemaChain) => { // for each event and cancellations key pair
         cancellationsByEvent.forEach((cancellation, event) => { // for each event and cancellation key pair
-            
+
             if (cancellation !== null) { // if the current event has a cancellation
                 Logger.log(`Processing event ${event.title} for ${cinemaChain} with cancellation...`);
             } else {
