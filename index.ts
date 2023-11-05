@@ -208,7 +208,7 @@ function parseCineworldEventEmail(mail: GoogleAppsScript.Gmail.GmailMessage): Ci
     const bookingDetailsBodyRegex = new RegExp(/You are going to see: .*(?=Use your e-ticket)/gms);
     const bookingReferenceRegex = new RegExp(/(?<=Your booking reference\snumber\sis:\s)[a-zA-Z0-9]*/mg);
     const filmNameRegex = new RegExp(/(?<=You are going to see:\s\*).*(?=\*)/);
-    const cinemaAddressRegex = new RegExp(/(?<=Cinema addres: \*).*(?=\*)/);
+    const cinemaAddressRegex = new RegExp(/(?<=Cinema address: \*).*(?=\*)/);
     const dateRegex = new RegExp(/(?<=Date: \*).*(?=\*)/);
     const ticketCountRegex = new RegExp(/(?<=Number of people going: \*).*(?=\*)/);
     const screenRegex = new RegExp(/(?<=Screen: \*).*(?=\*)/);
