@@ -7,7 +7,7 @@ jobs:
   lint:
     runs-on: ubuntu-22.04
     container:
-      image: node:21
+      image: node:22
     steps:
       - name: Checkout
         uses: actions/checkout@v4
