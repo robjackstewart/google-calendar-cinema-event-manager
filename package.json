@@ -12,7 +12,7 @@
   "author": "robjackstewart@gmail.com",
   "license": "ISC",
   "dependencies": {
-    "@types/google-apps-script": "^1.0.74"
+    "@types/google-apps-script": "^2.0.0"
   },
   "devDependencies": {
     "@google/clasp": "github:google/clasp",
